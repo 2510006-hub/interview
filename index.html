@@ -67,7 +67,7 @@ body.rec .recdot{display:block}
       <ol>
         <li>폰을 <b>가로로</b> 거치대에 세우고, 눈높이에 맞춰요.</li>
         <li><b>녹화하며 인터뷰 시작</b>을 누르고 카메라·마이크를 <b>허용</b>해요. 질문과 녹화가 같이 시작돼요.</li>
-        <li>AI가 질문하면 편하게 대답하세요. 말이 끝나고 잠시 조용하면 AI가 "대답이 끝나셨나요? 다음 질문으로 넘어가도 될까요?"라고 물어요. <b>"네"</b>라고 하면 다음 질문으로, 더 말하면 계속 들어요.</li>
+        <li>AI가 질문하면 편하게 대답하세요. 말이 끝나고 잠시 조용하면 AI가 "다 말씀하셨어요?"라고 물어요. <b>"네"</b>라고 하면 다음 질문으로, 더 말하면 계속 들어요.</li>
         <li>자동으로 안 넘어가면 <b>화면을 한 번 톡</b> 누르세요. (키보드는 스페이스)</li>
       </ol>
       <p class="small">다 끝나면 영상이 <b>자동으로 저장</b>되고, <b>카톡으로 보내기</b> 버튼으로 담당자에게 바로 보낼 수 있어요. 영상은 300MB를 넘지 않게 찍혀요.</p>
@@ -134,7 +134,7 @@ body.rec .recdot{display:block}
     <input type="range" id="rate" min="0.8" max="1.4" step="0.05">
 
     <label><input type="checkbox" id="showQ"> 질문 글자를 화면에 보여 주기</label>
-    <label><input type="checkbox" id="confirm"> 다음 질문 전에 "대답이 끝나셨나요? 다음 질문으로 넘어가도 될까요?" 물어보기</label>
+    <label><input type="checkbox" id="confirm"> 다음 질문 전에 "다 말씀하셨어요?" 물어보기</label>
     <label><input type="checkbox" id="ack"> 질문 사이에 "네, 감사해요" 같은 맞장구 넣기</label>
     <p class="small">질문 목록의 첫 줄은 인사말이에요. 대답 없이 바로 첫 질문으로 넘어가요.</p>
 
@@ -155,9 +155,12 @@ const DEFAULT_Q = [
   "마지막 질문이에요. 이번에는 카메라를 바라보고, 그분에게 하고 싶은 말을 직접 전해 주세요."
 ];
 const END_LINE = "감사합니다. 정말 따뜻한 이야기였어요. 이제 녹화를 멈추셔도 돼요.";
-const ACKS = ["네, 감사해요. 그럼 다음 질문 드릴게요.", "네, 좋아요. 다음 질문 드릴게요."];
-const CHECKS = ["대답이 끝나셨나요? 다음 질문으로 넘어가도 될까요?", "다 말씀하셨나요? 그럼 다음 질문으로 넘어가도 될까요?"];
-const GO_ON = ["네, 감사해요. 그럼 다음 질문 드릴게요.", "네, 좋아요. 다음 질문 드릴게요."];
+const ACKS = ["네, 좋아요."];
+const CHECKS = ["다 말씀하셨어요?"];
+const GO_ON = ["네, 좋아요."];
+CLIPS["다 말씀하셨어요?"] = "data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjYwLjE2LjEwMAAAAAAAAAAAAAAA//OEwAAAAAAAAAAAAEluZm8AAAAPAAAAPQAAF6AADBAQFBgYHBwgJCQoKCwwMDQ0ODw8QUVFSUlNUVFVVVldXWFhZWlpbXFxdXV5fX2CgoaKio6OkpaWmpqeoqKmqqqurrK2trq6vsPDx8fLz8/T19fb29/j4+fn6+/v8/P3+/v/AAAAAExhdmM2MC4zMQAAAAAAAAAAAAAAACQCRgAAAAAAABegqxBmnQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//NExAASOK5oA0kQAmAYMFwDgDAGG2+ujnv8IIEaNGjnOc5k9CEAAMDAwMDAxYf8SAgsHwfBAEBACAJg+D7/lwfB8HwfBA5p//ghBB0uD4f/8EAQBBwI1hQ02uoPmpY1//NExAoUsR6EAZlgAAFAUrgGjrRaYtTmDraxqOF5fJgVDhKCQHWCaamyp1G0xW5MbtHA1SNul1LlWK3mf+CkUniwRjiz0kXlDBBrXK+zb3XMsf//q64KEyMAFKSVgB4L//NExAoVCRaSX88wANJuEqXF+xv4L/1i0mes7a7fNT+S0Z8lQcGI5muYbKeTkzu/1ef9/2r5LlapgYaVOtS4eMNCIBRLYmBL+eue4T1KFYtKuNuF/ad2VQ5Y9XSd32AD//NExAgUELaaPnmGTPtT0kiQy+OgRaKFvi7Sc1eUMjLcDWxjZSMsDsidSE0KPm1JE4deKcODYCeRWwg8WSKkBiHDVuuHDJ0Niw1u1RlKDq3fLfzpGtUDGgFfjgAq1qMU//NExAoU0SaFl1gwAKL7tfOmvz17Ve9Raz+/eqVd1K3AxIWYY9OelUJLrMQ1nd2/n5bs+a9Vj7Pw2mLvZMmXpSPGXCfRVYlwVilfUyxJ/2K5HxX1iKXVT0w1KJ3eqSwK//NExAkSybKgAY84AMDfZbOWs80pU0k6IYPHqOpUw1yaMQFAROREcNtdu9ja0as3TTl6MqUNa/r9TFMJoDqyRoOf3NhUqsUNUf/tEh9n9KoqFJgHabcCYib2egYBAUes//NExBAWKla+N88oAvgPJsfOJvnvEgSw2UemA++p3scwcAgqqIKKiqc5vzmudlWv7KYpKxydPd6fqivOv9DNUouIGOdKp/ozp0MLHW//rctwo2xhsOXO6llCBglaVgex//NExAoUsRLFdnsSco6FR25jJuy1sOAEF+ywoNqVMxzHcfjY4EAm0mjC46RNJAgYay4QtlvV2r8PWMYgy4Wo7SIAxKOGJrFqiQXEihX//ojBVP///6VHRuDVCyDVc+iC//NExAoTWTrWFnpKdjfinaTUtYMCoSAnZEY9KvICAK2a78rKHFoRBMRBpnPLnMb/VqbMQoksYIgMooHAWAJBVaqCaDAOIb//9d///+SVAILKzRccAYCM6j4yHY9oHYTN//NExA8SYMa1VmPSpDeJQaqFhIJLEeQIZgsrfcqh6TCYIqDAhIGiFTVmt9SaQvXFbC0soHQE9E7SDR5JYWCrQanf//////7aQYC05LgArI27mfLF7WSVwvBXKG1r36hZ//NExBgScTK5fnjEynWsdWErsYpB0Q6yN9kgxBil/6llQrK4lQSWsixpY6m464Ona7/ufrskGnyDomfDEShC4HE9EB0ViBeGN8K0RNWHIZCdUa5YnLK0R1SxszjYs5PY//NExCER4ZalUHsGlVRg4WGYExL+FCBoWKHZ/iE7nU9zhOfohaE6F//p3/867u7u4AjgCiGqCBuswIrfGfMu8STF1yFTAsHQfo30kf0msy/1W1p0mKw8g2qJAsIhmJY+//NExCwTmX7AtGJFSMzXe7wvZeffmbjDg2wYRwxPfu+jf6mELBgcTe3//////rKV938AgHlvA/BSfjYFlfBSK9C9R/ChHEfjXjZse6c56C46oiA8EUVgKIkzB1J3ZuY8//NExDASQS7eXmHYnLmRj6xgmGDxZmuCcRoEn//////2KDUETJBp1lZBLsQCXrs+BtVYAlzGhgwwkYQSDCYUreGuFrsGFeonpCOqP4XjhZjUMVhWv8236mmMfNWvRl/o//NExDoSWfLKNnjKzm///cyEIOI5H+R///6iU2rANACn8B4GNeGoZY2NI+r40MfHCuAMjO4GHvS7VcxJ79Yqk1Vh8kAolQ97NrQG1wi/seQxA4h/rD384sCO/8PqGvLv//NExEMRGMaorGDSyP2VQDwZjAo3sakz+ieiJxSKYqQeFF43JwheONqOTN/i/KZZoWP4P/2/O2j///d26/90VBLHlkP/+RnOVjEQORxSlcyqCKUZd8EJqBqaqYEA0zR1//NExFERwuasqkhE3WogSZyTULyUeGxKCTw0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4OhqSERUJHg7yx5YwKBUAusEoSPA//NExOUSOS6ZnlmGHLPDSipV1buVRI5LlbA1sb/tSZqjLDXWGJDOR01BOJY0/hrD2WOTf2GseU1aoyo21z/2qDhYaz5ltSWOJDOiJorv1V6WUmS9LLu5wNWJdzVSWzvp//NExO8YKS54tsJGPEU1iqKYqoVRTZWcVAp1TEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMu//NExOEScKZYNGJMADEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMu//NExOoUYaXUABhHATEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMu//NExKwAAANIAAAAADEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//NExKwAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//NExKwAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
+// 녹음의 일부분만 쓰기: [원래 녹음, 시작 초, 길이 초]
+const SEGS = { "네, 좋아요.": ["네, 좋아요. 다음 질문 드릴게요.", 0, 1.22] };
 const pick = a => a[Math.floor(Math.random() * a.length)];
 
 const $ = id => document.getElementById(id);
@@ -243,17 +246,23 @@ async function decodeClips(){
     }catch(e){}
   }
 }
-function playBuf(b){
+function playBuf(b, off, dur){
   return new Promise(res => {
     let done = false; const fin = () => { if (!done){ done = true; res(); } };
     const s = ac.createBufferSource(); s.buffer = b; s.playbackRate.value = cfg.rate;
     s.connect(ac.destination); if (mixDest) s.connect(mixDest);
     s.onended = () => { if (curSrc === s) curSrc = null; fin(); };
-    curSrc = s; s.start();
-    setTimeout(fin, b.duration * 1000 / cfg.rate + 1500);
+    curSrc = s; if (dur) s.start(0, off || 0, dur); else s.start();
+    setTimeout(fin, (dur || b.duration) * 1000 / cfg.rate + 1500);
   });
 }
 async function speak(text){
+  if (cfg.voice === "rec" && SEGS[text]){
+    const [src, off, dur] = SEGS[text];
+    if (ac && ac.state !== "running") try{ await ac.resume(); }catch(e){}
+    if (ac && ac.state === "running" && bufs[src]){ await playBuf(bufs[src], off, dur); return; }
+    await speakSys(text); return;
+  }
   if (cfg.voice === "rec" && CLIPS[text]){
     if (ac && ac.state !== "running") try{ await ac.resume(); }catch(e){}
     if (ac && ac.state === "running" && bufs[text]){ await playBuf(bufs[text]); return; }
